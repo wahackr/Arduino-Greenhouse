@@ -18,7 +18,7 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <DS3231.h>
-#include <DHT.h>;
+#include <DHT.h>
 
 #define DHTPIN 2     // what pin we're connected to
 #define DHTTYPE DHT22   // DHT 22  (AM2302)
@@ -37,21 +37,24 @@ int temp = 0;
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
+  Serial.print("init\r\n");
   lcd.setBacklightPin(3, POSITIVE);
-  lcd.setBacklight(HIGH); // NOTE: You can turn the backlight off by setting it to LOW instead of HIGH
+  lcd.setBacklight(LOW); // NOTE: You can turn the backlight off by setting it to LOW instead of HIGH
   lcd.begin(16, 2); //16 columns, 2 lines
   lcd.clear();  
   rtc.begin();
   dht.begin();
-  //rtc.setTime(19,42,00);
-  //rtc.setDate(5,3,2016);
+  //rtc.setTime(11,8,00);
+  //rtc.setDate(8,4,2017);
 }
 
 void loop() {
+  Serial.print("loop\r\n");
   // put your main code here, to run repeatedly:
   // Send Day-of-Week
+
+  
   Serial.print(rtc.getDOWStr());
-  Serial.print(" ");
   
   // Send date
   Serial.print(rtc.getDateStr());
@@ -59,12 +62,12 @@ void loop() {
 
   // Send time
   Serial.println(rtc.getTimeStr());
-
+  
   sensors.requestTemperatures();
-  temp_outside = sensors.getTempCByIndex(0);
+  temp_inside = sensors.getTempCByIndex(0);
 
   hum = dht.readHumidity();
-  temp_inside= dht.readTemperature();
+  temp_outside = dht.readTemperature();
   
   Serial.print("Outside Temperature: ");
   Serial.println(temp_outside);
@@ -86,7 +89,7 @@ void loop() {
     temp = 1;
   } else {
     lcd.print("Out: ");
-    lcd.print((int)temp_inside);
+    lcd.print((int)temp_outside);
     temp = 0;
   }
   lcd.print(" Hum: ");
